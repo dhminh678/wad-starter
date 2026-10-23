@@ -52,4 +52,19 @@
   - Row 7: Typed `scarf` -> `Showing 1 of 12 products`. Typed `SCARF` -> identical result. Cleared input -> all 12 cards restored, status line empty.
   - Row 8: Typed `<img src=x onerror=alert(1)>` -> displayed literal string `No products match "<img src=x onerror=alert(1)>"` without alert or broken image.
 
+## Part B3: Prevent Form Reload (`app.js`)
+
+- **Tool:** Gemini 3.8 Flash (Antigravity Assistant)
+- **Request:**
+  "Implement task B3 in `app.js`: Intercept form submit event on `searchInput.form`, call `event.preventDefault()`, and invoke `applyFilter()`."
+- **Kept:**
+  - Checking `searchInput.form` existence.
+  - Calling `event.preventDefault()` to cancel native GET submission.
+  - Triggering `applyFilter()` immediately upon submit.
+- **Changed / Rejected:**
+  - Confirmed that form submission was intercepted without causing any page reloads or URL query parameters (`?q=...`), keeping in-memory cart state completely intact.
+- **Check Results:**
+  - Row 9: Typed `cap` and pressed Enter in search box -> Page did NOT reload, URL remained unchanged, and cart count remained unchanged.
+
+
 

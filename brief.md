@@ -51,4 +51,17 @@
 > - NEVER use `innerHTML` when displaying user input (must prevent XSS).
 > - Test against Done means row 7 (`scarf`, `SCARF`, clear) and row 8 (`<img src=x onerror=alert(1)>`).
 
+## Part B3 — Prevent Search Form Reload
+
+**Prompt:**
+> Please implement task B3 in `app.js` following the specification in the TODO comments:
+> - Listen for the `'submit'` event on `searchInput.form`.
+> - Call `event.preventDefault()` to stop the browser from reloading the page and appending `?q=...` to the address bar.
+> - Call `applyFilter()` to ensure search results update on submit.
+>
+> **Constraints:**
+> - Preserves client state (cart contents and count) when pressing Enter.
+> - Test against Done means row 9.
+
+
 
