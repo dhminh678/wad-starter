@@ -66,5 +66,21 @@
 - **Check Results:**
   - Row 9: Typed `cap` and pressed Enter in search box -> Page did NOT reload, URL remained unchanged, and cart count remained unchanged.
 
+## Part B4 (Stretch): Cart Total Price Calculation (`app.js`)
+
+- **Tool:** Gemini 3.8 Flash (Antigravity Assistant)
+- **Request:**
+  "Implement stretch task B4 in `app.js`: Calculate the total cart price from `card.dataset.price`, convert dataset strings using `Number()`, format with `toLocaleString('vi-VN') + ' đ'`, and display in `cartTotal`."
+- **Kept:**
+  - Converting `dataset.price` string via `Number()` to prevent string concatenation bugs.
+  - Using `total.toLocaleString('vi-VN') + ' đ'` for standard Vietnamese currency formatting.
+  - Setting `cartTotal.textContent = ''` when `totalCount === 0`.
+- **Changed / Rejected:**
+  - Ensured lookup uses `catalogue.querySelector(`.card[data-id="${id}"]`)` so price is correctly found even if cards are filtered/hidden, and handles dynamically added cards (e.g. Belt at 140.000 đ) after "Load more".
+- **Check Results:**
+  - Added 3 T-shirts (180.000 đ each) -> Cart header displayed `Cart (3) · 540.000 đ`.
+  - Added Belt (140.000 đ) -> Header updated to `Cart (4) · 680.000 đ`.
+
+
 
 

@@ -63,5 +63,19 @@
 > - Preserves client state (cart contents and count) when pressing Enter.
 > - Test against Done means row 9.
 
+## Part B4 (Stretch) — Calculate and Display Cart Total Price
+
+**Prompt:**
+> Please implement task B4 (stretch goal) in `app.js`:
+> - In `renderCart()`, calculate the total price of all items currently in `cart`.
+> - Convert `card.dataset.price` to number with `Number()` to avoid string concatenation.
+> - Format the total as Vietnamese currency: `total.toLocaleString('vi-VN') + ' đ'`.
+> - Write `' · ' + formattedTotal` into `cartTotal` using `textContent` when items exist; write `''` when cart is empty.
+>
+> **Constraints:**
+> - Correctly look up prices for both initial cards and dynamically loaded cards (e.g. Belt).
+> - Test against Done means row 4 and README example: `Cart (3) · 540.000 đ`.
+
+
 
 
