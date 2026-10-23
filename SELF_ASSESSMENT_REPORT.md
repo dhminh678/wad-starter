@@ -1,5 +1,5 @@
 # Self-assessment — IA#2
-Submitted by: <student ID> — <full name>
+Submitted by: 24120090 — Đặng Hồng Minh
 Total I claim: 100 / 100
 
 | Criterion | Max | I claim | Evidence |
