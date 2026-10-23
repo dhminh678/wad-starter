@@ -31,11 +31,22 @@ const cart = {};
 // your listener is on the old buttons, not on the list.
 
 // TODO B1: catalogue.addEventListener(...)
-
+catalogue.addEventListener('click', (event) => {
+  const addButton = event.target.closest('.add');
+  if (!addButton || addButton.disabled) return;
+  const card = addButton.closest('.card');
+  if (!card) return;
+  const id = card.dataset.id;
+  if (!id) return;
+  cart[id] = (cart[id] || 0) + 1;
+  renderCart();
+});
 
 function renderCart() {
   // TODO B1: write the number of items in the cart into cartCount.
   // Object.values(cart) gives [2, 1]; add them up. Use textContent.
+  const totalCount = Object.values(cart).reduce((sum, n) => sum + n, 0);
+  cartCount.textContent = totalCount;
 
   // Stretch B4: also write ' · 540.000 đ' into cartTotal.
   // Prices are in data-price on each card. dataset values are STRINGS:
