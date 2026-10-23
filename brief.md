@@ -34,3 +34,21 @@
 > - Do not modify `style.css` or `check.js`.
 > - Check against Done means rows 4, 5, 6.
 
+## Part B2 — Filter as You Type
+
+**Prompt:**
+> Please implement task B2 in `app.js` following the specification in the TODO comments:
+> - Implement `applyFilter()`:
+>   1. Read `searchInput.value`, `trim()` it, and convert to lower case with `toLowerCase()`.
+>   2. For every `.card`: set `card.hidden = true` unless its `.name` text contains the query (case-insensitive).
+>   3. Write status message into `statusBox` using `textContent` (NEVER `innerHTML`):
+>      - Empty query -> `''` (empty string, unhide all cards).
+>      - Some cards match -> `'Showing X of Y products'`.
+>      - Nothing matches -> `'No products match "<user-typed-query>"'`.
+> - Attach `applyFilter` to the `'input'` event of `searchInput`.
+>
+> **Constraints:**
+> - NEVER use `innerHTML` when displaying user input (must prevent XSS).
+> - Test against Done means row 7 (`scarf`, `SCARF`, clear) and row 8 (`<img src=x onerror=alert(1)>`).
+
+

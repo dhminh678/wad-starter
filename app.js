@@ -66,9 +66,36 @@ function applyFilter() {
   //      query is empty   -> ''  (nothing)
   //      some cards match -> 'Showing 3 of 8 products'
   //      nothing matches  -> 'No products match "<exactly what the user typed>"'
+  const rawQuery = searchInput.value;
+  const query = rawQuery.trim().toLowerCase();
+  const allCards = catalogue.querySelectorAll('.card');
+
+  if (query === '') {
+    for (const card of allCards) {
+      card.hidden = false;
+    }
+    statusBox.textContent = '';
+    return;
+  }
+
+  let matchCount = 0;
+  for (const card of allCards) {
+    const nameEl = card.querySelector('.name');
+    const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+    const matches = name.includes(query);
+    card.hidden = !matches;
+    if (matches) matchCount++;
+  }
+
+  if (matchCount > 0) {
+    statusBox.textContent = `Showing ${matchCount} of ${allCards.length} products`;
+  } else {
+    statusBox.textContent = `No products match "${rawQuery}"`;
+  }
 }
 
 // TODO B2: call applyFilter on every 'input' event of searchInput.
+searchInput.addEventListener('input', applyFilter);
 
 
 // ---------------------------------------------------------------------------

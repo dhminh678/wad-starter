@@ -36,3 +36,20 @@
   - Row 5: Tabbed to Add button and pressed Enter -> Count incremented to `3`.
   - Row 6: Clicked "Load more", clicked Add on Belt -> Count incremented to `4`.
 
+## Part B2: Filter as You Type (`app.js`)
+
+- **Tool:** Gemini 3.8 Flash (Antigravity Assistant)
+- **Request:**
+  "Implement task B2 in `app.js`: Filter cards as user types in `#q`. Convert input to lowercase, hide non-matching cards using `card.hidden`, update `statusBox` using `textContent`, and register listener on input event."
+- **Kept:**
+  - Case-insensitive comparison between `card.querySelector('.name').textContent` and search query.
+  - Setting `card.hidden = false` for all cards and clearing status text when query is empty.
+  - Dynamically counting `allCards.length` from `#catalogue` to handle both initial 8 products and 12 products after "Load more".
+- **Changed / Rejected:**
+  - Strictly insisted on using `statusBox.textContent` instead of `statusBox.innerHTML` to prevent script execution when testing XSS strings (Row 8: `<img src=x onerror=alert(1)>`).
+  - Rendered `rawQuery` verbatim inside quotes for the not-found message: `No products match "${rawQuery}"`.
+- **Check Results:**
+  - Row 7: Typed `scarf` -> `Showing 1 of 12 products`. Typed `SCARF` -> identical result. Cleared input -> all 12 cards restored, status line empty.
+  - Row 8: Typed `<img src=x onerror=alert(1)>` -> displayed literal string `No products match "<img src=x onerror=alert(1)>"` without alert or broken image.
+
+
