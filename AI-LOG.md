@@ -1,49 +1,55 @@
 # AI Interaction Log (`AI-LOG.md`)
 
 ## 2026-10-23 — Part A: semantic HTML tags (index.html)
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Replace generic div tags in index.html with semantic HTML elements while preserving all IDs and classes to pass selfCheck 8/8.
-Kept: Landmark elements (<header>, <nav>, <main>, <footer>), <h1> title, <h2> product headings, and <form> search box.
-Changed: Converted #catalogue to <ul> and every .card (including inside <template>) to <li> to satisfy the catalogue list check.
-Rejected: The assistant's initial suggestion to turn layout boxes (.brand, .price, .stock, .more) into <section>; kept them as <div> since they only do layout.
-By hand: Added the native `disabled` attribute to the sold-out Tote bag button so keyboard Tab navigation skips it (Done means row 3 & 4).
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Replace generic `<div>` tags in `index.html` with semantic HTML elements while preserving all IDs and classes to pass `check.js` 8/8.
+- **Kept:** Landmark elements (`<header>`, `<nav>`, `<main>`, `<footer>`), `<h1>` title, `<h2>` product names (including inside `<template id="card-template">`), `<ul>` catalogue with `<li>` cards, search `<form>` with `<label for="q">`, and `<button>` elements.
+- **Changed:** Added native `disabled` attribute to the sold-out Tote bag button so keyboard Tab navigation skips it (Done means row 3 & 4).
+- **Rejected:** The assistant's initial suggestion to turn layout boxes (`.brand`, `.price`, `.stock`, `.more`) into `<section>`; instructed assistant to keep them as `<div>` since they only serve visual layout (README: "if the assistant turned every one into <section>, say no").
+- **By hand:** Verified visual layout in browser against starter screenshot to confirm zero styling regressions (Done means row 2).
+- **Checked:** Row 1: `Session 4 self-check: 8/8 passed`; Row 2: visual appearance identical; Row 3: Tab navigation skips sold-out Tote bag.
 
 ## 2026-10-23 — Part B1: add to cart (app.js)
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Implement B1 in app.js with one delegated click listener on #catalogue and update cartCount in renderCart().
-Kept: The event delegation pattern using event.target.closest('.card') and card.dataset.id to increment cart quantities.
-Changed: Summed up quantities with Object.values(cart).reduce() and wrote to cartCount via textContent.
-Rejected: Any per-button click listeners; an earlier attempt attached listeners on .add which broke when new items were appended by "Load more" (Row 6: Belt).
-By hand: Guard check `if (!addButton || addButton.disabled) return;` so clicking the sold-out Tote bag does nothing.
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Implement B1 in `app.js` with ONE click listener on `#catalogue` (event delegation), increment `cart[id]`, update `cartCount` via `textContent` in `renderCart()`.
+- **Kept:** Event delegation pattern on `#catalogue` using `event.target.closest('.card')` and `card.dataset.id`; summing items via `Object.values(cart).reduce((sum, n) => sum + n, 0)`; updating `cartCount.textContent`.
+- **Changed:** Added guard condition `if (!addButton || addButton.disabled) return;` so clicking the disabled Tote bag or outside `.add` does nothing.
+- **Rejected:** Nothing went wrong — prompt specified a single event listener on `#catalogue` upfront. Verified that newly appended cards from "Load more" (Belt) work automatically without re-attaching listeners.
+- **By hand:** Tested clicking interactions on initial cards and dynamically loaded cards.
+- **Checked:** Row 4: T-shirt x2 + Tote bag -> `Cart (2)`; Row 5: Tab to Add + Enter -> count `3`; Row 6: "Load more" + Add on Belt -> count `4`.
 
 ## 2026-10-23 — Part B2: filter as you type (app.js)
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Implement applyFilter() to filter products by name on input events and update statusBox with match counts.
-Kept: Case-insensitive query matching (toLowerCase()), toggling card.hidden, and querying allCards from catalogue.
-Changed: Dynamically evaluated allCards.length so status shows "of 8" before Load more and "of 12" after Load more (Row 7).
-Rejected: Using innerHTML for the status message; strictly used statusBox.textContent to prevent XSS execution when testing with `<img src=x onerror=alert(1)>` (Row 8).
-By hand: The exact message template strings for empty query, matching count, and non-matching query.
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Implement `applyFilter()` in `app.js`: case-insensitive name matching on `input` event, toggle `card.hidden`, update `statusBox` via `textContent`.
+- **Kept:** Case-insensitive query matching with `toLowerCase()`, toggling `card.hidden`, registering `applyFilter` on search input's `input` event.
+- **Changed:** Dynamically counted `allCards.length` from `#catalogue` rather than hardcoding 8, so status displays "of 8" initially and "of 12" after "Load more".
+- **Rejected:** Any usage of `innerHTML` for `statusBox`; strictly enforced `statusBox.textContent` to prevent XSS execution when testing `<img src=x onerror=alert(1)>`.
+- **By hand:** Verified message template strings: empty string for blank query, `Showing X of Y products` for matches, `No products match "<rawQuery>"` for no matches.
+- **Checked:** Row 7: `scarf` -> `Showing 1 of 12 products`; `SCARF` -> identical 1 card; clear input -> all 12 cards restored, status line empty. Row 8: typed `<img src=x onerror=alert(1)>` -> displayed literal string, 0 alerts, 0 broken images.
 
 ## 2026-10-23 — Part B3: prevent search form reload (app.js)
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Stop the search form from reloading the page when pressing Enter in the search input.
-Kept: Attaching a submit listener to searchInput.form and calling event.preventDefault().
-Changed: Added applyFilter() call right after preventDefault() to refresh search results immediately upon form submission.
-Rejected: Listening for keydown (Enter) on the input field instead of the form's submit event.
-By hand: Verified in browser that URL does not get `?q=cap` and cart count is preserved after pressing Enter (Row 9).
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Intercept search form submit in `app.js` with `event.preventDefault()` to stop page reload and URL query params, then call `applyFilter()`.
+- **Kept:** Attaching `submit` listener to `searchInput.form` and calling `event.preventDefault()`, followed by `applyFilter()`.
+- **Changed:** Added guard check `if (searchInput.form)` before adding listener.
+- **Rejected:** Listening for `keydown` (Enter) on the input field instead of the form's `submit` event, ensuring submission works both via Enter key and clicking Search button.
+- **By hand:** Checked browser address bar to verify URL does not get `?q=cap` and cart count is preserved after pressing Enter.
+- **Checked:** Row 9: Typed `cap` and pressed Enter -> address bar unchanged, cart count intact.
 
 ## 2026-10-23 — Part B4: calculate cart total price (app.js)
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Calculate total price of items in cart and display formatted VND currency in cartTotal.
-Kept: Iterating cart items, looking up card.dataset.price, and formatting total with toLocaleString('vi-VN') + ' đ'.
-Changed: Wrapped string conversion with Number(card.dataset.price) to prevent string concatenation bugs.
-Rejected: Computing price from a static array; queried from catalogue DOM so dynamically added items (Belt) are priced correctly.
-By hand: Resetting cartTotal.textContent to empty string when cart is empty (totalCount === 0).
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Implement stretch goal B4 in `app.js`: calculate cart total price from `card.dataset.price`, format with `toLocaleString('vi-VN') + ' đ'`, display in `cartTotal`.
+- **Kept:** Querying cards from `#catalogue` by `data-id`, converting `card.dataset.price` using `Number()`, formatting with `total.toLocaleString('vi-VN') + ' đ'`, and displaying ` · <total>` in `cartTotal`.
+- **Changed:** Handled empty cart display: resetting `cartTotal.textContent = ''` when `totalCount === 0`.
+- **Rejected:** Computing price from a static array; queried `dataset.price` from DOM cards so newly loaded cards (Belt at 140.000 đ) are priced accurately.
+- **By hand:** Verified currency punctuation (dot separator `540.000 đ` according to Vietnamese locale `vi-VN`).
+- **Checked:** Added 3 T-shirts (180.000 đ each) -> `Cart (3) · 540.000 đ`; clicked "Load more" and added Belt (140.000 đ) -> `Cart (4) · 680.000 đ`.
 
 ## 2026-10-25 — Testing & verification: 11 rows of Done means table
-Tool: Gemini 3.8 Flash (Antigravity).
-Asked for: Verify all 11 rows of the Done means table in README.md via browser interaction and script inspection to ensure full compliance before submission.
-Kept: Systematically testing every row: console 8/8 check (Row 1), visual comparison (Row 2), keyboard Tab focus ring (Row 3), cart count on T-shirt and disabled Tote (Row 4), Enter on focused button (Row 5), dynamic Load more + Add on Belt (Row 6), case-insensitive search with 'scarf'/'SCARF' (Row 7), XSS string handling with literal rendering (Row 8), Enter on search form without reload (Row 9), clean console with 0 errors (Row 10), and git scope check (Row 11).
-Changed: Adjusted the verification test order so that Row 7 matches "Showing 1 of 12 products" strictly after Row 6 clicks "Load more" (as noted in README note: before Load more it displays "of 8").
-Rejected: Assistant's suggestion to mock DOM events or rewrite check.js/style.css to bypass checks; insisted on running live browser interactions against the untouched check.js and style.css files.
-By hand: Checked the orange focus ring visually on keyboard navigation (Row 3), confirmed the URL query string stayed empty on Enter (Row 9), and ran `git diff --stat 7bfa5d2` to confirm exactly zero changes to check.js and style.css (Row 11).
+- **Tool:** Gemini 3.8 Flash (Antigravity).
+- **Asked for:** Run full verification checklist for all 11 rows of the Done means table in `README.md` and check scope compliance before final packaging.
+- **Kept:** Systematically verifying every row 1–11: Row 1 (selfCheck 8/8), Row 2 (visual match), Row 3 (keyboard Tab focus & ring), Row 4 (cart count with sold-out disabled button), Row 5 (Enter key on Add), Row 6 (Load more + Belt), Row 7 (scarf/SCARF search), Row 8 (XSS string immunity), Row 9 (search Enter no-reload), Row 10 (0 console errors), Row 11 (git scope diff).
+- **Changed:** Adjusted verification test order so Row 7 is tested after Row 6 (ensuring catalogue has 12 items as specified in the README note).
+- **Rejected:** Assistant's suggestion to mock DOM events or rewrite `check.js`/`style.css` to fake pass results; strictly conducted live browser checks against the untouched original check and style files.
+- **By hand:** Checked orange focus ring visually on keyboard navigation (Row 3), confirmed URL query string stayed empty on Enter (Row 9), and ran `git diff --stat 7bfa5d2` to confirm zero changes to `check.js` and `style.css` (Row 11).
+- **Checked:** 11/11 Done means rows passed; 0 console errors; scope check clean.
